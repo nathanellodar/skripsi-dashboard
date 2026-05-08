@@ -1,0 +1,156 @@
+@import "tailwindcss";
+
+@theme {
+  --color-error: #F87171;
+  /* red-400 */
+  --color-primary-container: #3B82F6;
+  /* bright blue */
+  --color-primary: #60A5FA;
+  /* light blue */
+  --color-tertiary: #818CF8;
+  /* indigo */
+  --color-on-error-container: #FFFFFF;
+  --color-on-primary-fixed-variant: #E0E7FF;
+  --color-error-container: #991B1B;
+  --color-inverse-primary: #1E3A8A;
+  --color-secondary-container: #1E293B;
+  /* slate-800 */
+  --color-surface-dim: #0B1120;
+  /* Very dark blue/black background */
+  --color-primary-fixed-dim: #93C5FD;
+  --color-on-primary-fixed: #0F172A;
+  --color-surface-container-low: #0F172A;
+  /* slate-900 */
+  --color-secondary-fixed: #CBD5E1;
+  --color-on-tertiary-fixed-variant: #334155;
+  --color-on-tertiary-fixed: #020617;
+  --color-on-error: #450A0A;
+  --color-outline-variant: rgba(255, 255, 255, 0.1);
+  --color-outline: rgba(255, 255, 255, 0.2);
+  --color-surface-tint: #3B82F6;
+  --color-on-surface: #F8FAFC;
+  /* slate-50 */
+  --color-on-surface-variant: #94A3B8;
+  /* slate-400 */
+  --color-on-secondary: #0F172A;
+  --color-surface: #0B1120;
+  --color-on-tertiary: #1E1B4B;
+  --color-on-secondary-container: #E2E8F0;
+  --color-surface-container-high: #1E293B;
+  /* slate-800 */
+  --color-inverse-surface: #F1F5F9;
+  --color-surface-bright: #334155;
+  /* slate-700 */
+  --color-tertiary-fixed-dim: #A5B4FC;
+  --color-tertiary-container: #3730A3;
+  --color-on-secondary-fixed-variant: #475569;
+  --color-secondary: #94A3B8;
+  --color-surface-container: #162032;
+  /* slate-850 */
+  --color-on-background: #F8FAFC;
+  --color-tertiary-fixed: #E0E7FF;
+  --color-primary-fixed: #DBEAFE;
+  --color-on-tertiary-container: #E0E7FF;
+  --color-on-secondary-fixed: #0F172A;
+  --color-on-primary: #FFFFFF;
+  --color-background: #0B1120;
+  --color-on-primary-container: #FFFFFF;
+  --color-surface-container-highest: #334155;
+  /* slate-700 */
+  --color-secondary-fixed-dim: #94A3B8;
+  --color-surface-container-lowest: #020617;
+  /* slate-950 */
+  --color-surface-variant: #1E293B;
+  --color-inverse-on-surface: #0F172A;
+
+  --spacing-xl: 64px;
+  --spacing-margin: 32px;
+  --spacing-sm: 12px;
+  --spacing-base: 8px;
+  --spacing-xs: 4px;
+  --spacing-lg: 40px;
+  --spacing-gutter: 20px;
+  --spacing-md: 24px;
+
+  --font-body-md: "Inter";
+  --font-headline-xl: "Manrope";
+  --font-body-sm: "Inter";
+  --font-headline-lg: "Manrope";
+  --font-code-log: "Inter";
+
+  --text-body-md: 16px;
+  --text-body-md--line-height: 1.6;
+  --text-headline-xl: 40px;
+  --text-headline-xl--line-height: 1.2;
+  --text-headline-xl--letter-spacing: -0.02em;
+  --text-headline-xl--font-weight: 700;
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 1.5;
+  --text-headline-lg: 24px;
+  --text-headline-lg--line-height: 1.3;
+  --text-headline-lg--font-weight: 600;
+  --text-code-log: 13px;
+  --text-code-log--line-height: 1.4;
+  --text-code-log--letter-spacing: 0.01em;
+  --text-code-log--font-weight: 500;
+}
+
+body {
+  min-height: max(884px, 100dvh);
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+}
+
+.glass-panel {
+  background: rgba(26, 34, 45, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-card {
+  background: rgba(26, 34, 45, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pie-chart {
+  background: conic-gradient(var(--color-error) 0% 45%,
+      /* Error / DDoS */
+      var(--color-primary) 45% 75%,
+      /* Primary / Brute Force */
+      var(--color-tertiary) 75% 100%
+      /* Tertiary / Payload */
+    );
+  border-radius: 50%;
+}
+
+/* --- Global Transitions for Elegance --- */
+/* Page transitions */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+/* General interactive transition class to use on elements */
+.transition-elegant {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
