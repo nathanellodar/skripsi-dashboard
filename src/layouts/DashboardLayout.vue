@@ -4,9 +4,9 @@
     <!-- Top Navigation Area (Mobile Header) -->
     <header class="bg-[#1A222D] text-stone-200 font-manrope antialiased tracking-tight full-width top-0 border-b border-white/5 flex justify-between items-center w-full px-4 py-3 sticky z-40 md:hidden">
       <div class="flex items-center gap-3">
-        <button aria-label="Open Menu" class="p-1 text-stone-400 hover:text-stone-200 transition-all duration-200">
+        <!-- <button aria-label="Open Menu" class="p-1 text-stone-400 hover:text-stone-200 transition-all duration-200">
           <span class="material-symbols-outlined text-[28px]">menu</span>
-        </button>
+        </button> -->
         <span class="text-base font-bold tracking-wider text-stone-100 uppercase leading-tight">MONITORING<br/>GATEWAY</span>
       </div>
       <div class="flex gap-2 items-center">

@@ -9,14 +9,14 @@
       <!-- Header / Branding -->
       <div class="flex flex-col items-center gap-3 w-full text-center">
         <div class="w-16 h-16 rounded-xl bg-surface-container-high border border-outline-variant flex items-center justify-center shadow-lg shadow-black/30 mb-2">
-          <span class="material-symbols-outlined text-4xl text-[var(--color-primary)]" style="font-variation-settings: 'FILL' 1;">shield_lock</span>
+          <span class="material-symbols-outlined text-4xl text-[var(--color-primary)]" style="font-variation-settings: 'FILL' 1;">admin_panel_settings</span>
         </div>
-        <h1 class="font-headline-xl text-[40px] leading-tight font-bold text-on-surface tracking-tight">Monitoring Gateway</h1>
-        <p class="font-body-sm text-sm text-on-surface-variant">Secure Authentication Portal</p>
+        <h1 class="font-headline-xl text-[36px] leading-tight font-bold text-on-surface tracking-tight">System Setup</h1>
+        <p class="font-body-sm text-sm text-on-surface-variant">Initialize Root Operator</p>
       </div>
 
-      <!-- Login Form -->
-      <form @submit.prevent="handleLogin" class="w-full flex flex-col gap-6">
+      <!-- Setup Form -->
+      <form @submit.prevent="handleSetup" class="w-full flex flex-col gap-6">
         
         <div v-if="error" class="p-3 rounded bg-error/20 text-error text-sm border border-error/30 transition-elegant">
           {{ error }}
@@ -32,17 +32,16 @@
               id="username" 
               name="username" 
               v-model="form.username"
-              placeholder="Enter credentials" 
+              placeholder="e.g. admin" 
               type="text"
+              required
             />
           </div>
         </div>
 
         <!-- Password Field -->
         <div class="flex flex-col gap-2">
-          <div class="flex justify-between items-baseline">
-            <label class="font-code-log text-xs text-on-surface-variant uppercase tracking-wider font-medium" for="password">Passphrase</label>
-          </div>
+          <label class="font-code-log text-xs text-on-surface-variant uppercase tracking-wider font-medium" for="password">Passphrase</label>
           <div class="relative group">
             <span class="material-symbols-outlined text-[20px] absolute left-3 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-[var(--color-primary)] transition-colors">key</span>
             <input 
@@ -52,18 +51,27 @@
               v-model="form.password"
               placeholder="••••••••" 
               type="password"
+              required
             />
           </div>
         </div>
 
-        <!-- Options Row -->
-        <!-- <div class="flex items-center justify-between mt-2">
-          <label class="flex items-center space-x-2 cursor-pointer">
-            <input class="form-checkbox h-4 w-4 text-[var(--color-primary)] bg-surface border-outline-variant rounded focus:ring-[var(--color-primary-container)] focus:ring-offset-[var(--color-background)]" type="checkbox"/>
-            <span class="font-body-sm text-sm text-on-surface-variant">Persistent Session</span>
-          </label>
-          <a class="font-body-sm text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-container)] transition-colors" href="#">Recover Access</a>
-        </div> -->
+        <!-- Confirm Password Field -->
+        <div class="flex flex-col gap-2">
+          <label class="font-code-log text-xs text-on-surface-variant uppercase tracking-wider font-medium" for="confirm_password">Confirm Passphrase</label>
+          <div class="relative group">
+            <span class="material-symbols-outlined text-[20px] absolute left-3 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-[var(--color-primary)] transition-colors">password</span>
+            <input 
+              class="w-full bg-surface-dim border border-outline-variant rounded-lg py-3 pl-[40px] pr-3 font-body-md text-base text-on-surface placeholder:text-outline focus:border-[var(--color-primary-container)] focus:ring-1 focus:ring-[var(--color-primary-container)] transition-all outline-none shadow-inner" 
+              id="confirm_password" 
+              name="confirm_password" 
+              v-model="form.confirmPassword"
+              placeholder="••••••••" 
+              type="password"
+              required
+            />
+          </div>
+        </div>
 
         <!-- Action Button -->
         <div class="pt-4">
@@ -76,19 +84,19 @@
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            <span v-if="!isLoading" class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">login</span>
-            <span>{{ isLoading ? 'Authenticating...' : 'Authenticate' }}</span>
+            <span v-if="!isLoading" class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">person_add</span>
+            <span>{{ isLoading ? 'Initializing...' : 'Complete Setup' }}</span>
           </button>
         </div>
       </form>
 
       <!-- Footer info -->
-      <!-- <div class="mt-auto pt-6 w-full border-t border-outline-variant/30 text-center">
+      <div class="mt-auto pt-6 w-full border-t border-outline-variant/30 text-center">
         <p class="font-body-sm text-sm text-on-surface-variant flex items-center justify-center gap-2">
           <span class="material-symbols-outlined text-[16px] text-[var(--color-tertiary-container)]">info</span>
-          71220892
+          First-time initialization required
         </p>
-      </div> -->
+      </div>
     </div>
   </div>
 </template>
@@ -96,26 +104,39 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { login } from '../api/gateway';
+import { setupUser, login } from '../api/gateway';
 
 const router = useRouter();
 const isLoading = ref(false);
 const error = ref('');
 
 const form = ref({
-  username: 'admin',
-  password: ''
+  username: '',
+  password: '',
+  confirmPassword: ''
 });
 
-const handleLogin = async () => {
+const handleSetup = async () => {
   error.value = '';
+
+  if (form.value.password !== form.value.confirmPassword) {
+    error.value = 'Passwords do not match.';
+    return;
+  }
+
   isLoading.value = true;
   
   try {
+    // 1. Setup User
+    await setupUser(form.value.username, form.value.password);
+    
+    // 2. Automatically login the user right after setup
     await login(form.value.username, form.value.password);
+    
+    // 3. Redirect to Dashboard
     router.push('/dashboard');
   } catch (err) {
-    error.value = err.message || 'Failed to login';
+    error.value = err.message || 'Failed to initialize setup';
   } finally {
     isLoading.value = false;
   }

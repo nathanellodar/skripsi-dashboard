@@ -33,12 +33,21 @@
         <!-- Content -->
         <div class="p-6 overflow-y-auto font-inter text-sm flex-1 custom-scrollbar flex flex-col gap-4">
           
+          <!-- Error/Success Messages -->
+          <div v-if="error" class="p-3 rounded-lg bg-red-500/10 text-red-400 text-sm border border-red-500/20">
+            {{ error }}
+          </div>
+          <div v-if="success" class="p-3 rounded-lg bg-emerald-500/10 text-emerald-400 text-sm border border-emerald-500/20">
+            {{ success }}
+          </div>
+
           <div class="flex flex-col gap-1.5">
             <label class="text-stone-300 font-medium text-xs uppercase tracking-wider">Old Password</label>
             <input 
               type="password" 
               v-model="form.oldPassword"
-              class="w-full bg-[#0B1120] border border-white/10 rounded-lg px-4 py-2.5 text-stone-200 focus:outline-none focus:border-[var(--color-primary-container)] focus:ring-1 focus:ring-[var(--color-primary-container)] transition-all"
+              :disabled="isLoading"
+              class="w-full bg-[#0B1120] border border-white/10 rounded-lg px-4 py-2.5 text-stone-200 focus:outline-none focus:border-[var(--color-primary-container)] focus:ring-1 focus:ring-[var(--color-primary-container)] transition-all disabled:opacity-50"
               placeholder="Enter your current password"
             />
           </div>
@@ -48,7 +57,8 @@
             <input 
               type="password" 
               v-model="form.newPassword"
-              class="w-full bg-[#0B1120] border border-white/10 rounded-lg px-4 py-2.5 text-stone-200 focus:outline-none focus:border-[var(--color-primary-container)] focus:ring-1 focus:ring-[var(--color-primary-container)] transition-all"
+              :disabled="isLoading"
+              class="w-full bg-[#0B1120] border border-white/10 rounded-lg px-4 py-2.5 text-stone-200 focus:outline-none focus:border-[var(--color-primary-container)] focus:ring-1 focus:ring-[var(--color-primary-container)] transition-all disabled:opacity-50"
               placeholder="Enter new password"
             />
           </div>
@@ -58,7 +68,8 @@
             <input 
               type="password" 
               v-model="form.confirmPassword"
-              class="w-full bg-[#0B1120] border border-white/10 rounded-lg px-4 py-2.5 text-stone-200 focus:outline-none focus:border-[var(--color-primary-container)] focus:ring-1 focus:ring-[var(--color-primary-container)] transition-all"
+              :disabled="isLoading"
+              class="w-full bg-[#0B1120] border border-white/10 rounded-lg px-4 py-2.5 text-stone-200 focus:outline-none focus:border-[var(--color-primary-container)] focus:ring-1 focus:ring-[var(--color-primary-container)] transition-all disabled:opacity-50"
               placeholder="Confirm new password"
             />
           </div>
@@ -69,15 +80,21 @@
         <div class="p-4 border-t border-white/5 bg-[#1A222D] sm:rounded-b-2xl flex gap-3">
           <button 
             @click="$emit('close')"
-            class="flex-1 bg-white/5 hover:bg-white/10 text-stone-300 font-semibold py-2.5 rounded-lg transition-colors focus:outline-none"
+            :disabled="isLoading"
+            class="flex-1 bg-white/5 hover:bg-white/10 text-stone-300 font-semibold py-2.5 rounded-lg transition-colors focus:outline-none disabled:opacity-50"
           >
             Cancel
           </button>
           <button 
             @click="handleChangePassword"
-            class="flex-1 bg-[var(--color-primary-container)] hover:bg-[var(--color-primary)] text-[#3a2e21] font-semibold py-2.5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1A222D] focus:ring-[var(--color-primary-container)]"
+            :disabled="isLoading"
+            class="flex-1 bg-[var(--color-primary-container)] hover:bg-[var(--color-primary)] text-[#3a2e21] font-semibold py-2.5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#1A222D] focus:ring-[var(--color-primary-container)] disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            Change
+            <svg v-if="isLoading" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            {{ isLoading ? 'Changing...' : 'Change' }}
           </button>
         </div>
         
@@ -87,7 +104,8 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, reactive } from 'vue';
+import { defineProps, defineEmits, reactive, ref, watch } from 'vue';
+import { changePassword } from '../api/gateway';
 
 const props = defineProps({
   isOpen: {
@@ -104,15 +122,56 @@ const form = reactive({
   confirmPassword: ''
 });
 
-const handleChangePassword = () => {
-  // Integrate API later
-  console.log('Change Password Triggered:', form);
-  
-  // reset and close
-  form.oldPassword = '';
-  form.newPassword = '';
-  form.confirmPassword = '';
-  emit('close');
+const isLoading = ref(false);
+const error = ref('');
+const success = ref('');
+
+// Reset form when modal opens/closes
+watch(() => props.isOpen, (val) => {
+  if (!val) {
+    form.oldPassword = '';
+    form.newPassword = '';
+    form.confirmPassword = '';
+    error.value = '';
+    success.value = '';
+  }
+});
+
+const handleChangePassword = async () => {
+  error.value = '';
+  success.value = '';
+
+  // Validation
+  if (!form.oldPassword || !form.newPassword || !form.confirmPassword) {
+    error.value = 'Semua field harus diisi.';
+    return;
+  }
+
+  if (form.newPassword !== form.confirmPassword) {
+    error.value = 'Password baru tidak cocok dengan konfirmasi.';
+    return;
+  }
+
+  if (form.newPassword.length < 6) {
+    error.value = 'Password baru minimal 6 karakter.';
+    return;
+  }
+
+  isLoading.value = true;
+
+  try {
+    await changePassword(form.oldPassword, form.newPassword);
+    success.value = 'Password berhasil diubah!';
+    
+    // Auto close after success
+    setTimeout(() => {
+      emit('close');
+    }, 1500);
+  } catch (err) {
+    error.value = err.message || 'Gagal mengubah password.';
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
 

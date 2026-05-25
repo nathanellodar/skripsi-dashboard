@@ -15,3 +15,4 @@ dist-ssr
 *.sw?
 *.zip
 stitch_gateway_security_monitoring_dashboard
+*.md

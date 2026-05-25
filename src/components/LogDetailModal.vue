@@ -44,8 +44,8 @@
             <div class="flex flex-col border border-white/5 rounded-lg overflow-hidden bg-[#131b2e]">
               
               <div class="flex justify-between p-3 border-b border-white/5 items-center">
-                <span class="text-stone-400">Attack Type</span>
-                <span class="text-stone-200 font-medium">{{ log.description || 'Unknown' }}</span>
+                <span class="text-stone-400">Alert Message</span>
+                <span class="text-stone-200 font-medium text-xs text-right max-w-[60%]">{{ log.alert || log.alert_msg || 'Unknown' }}</span>
               </div>
               
               <div class="flex justify-between p-3 border-b border-white/5 items-center">
@@ -55,27 +55,41 @@
               
               <div class="flex justify-between p-3 border-b border-white/5 items-center">
                 <span class="text-stone-400">Source IP</span>
-                <span class="text-stone-200 font-mono text-xs bg-white/5 px-2 py-0.5 rounded">{{ log.sourceIp || '-' }}</span>
+                <span class="text-stone-200 font-mono text-xs bg-white/5 px-2 py-0.5 rounded">{{ log.src_ip || '-' }}</span>
               </div>
               
               <div class="flex justify-between p-3 border-b border-white/5 items-center">
                 <span class="text-stone-400">To Port</span>
-                <span class="text-[var(--color-primary-container)] font-mono font-bold">{{ log.port || '-' }}</span>
+                <span class="text-[var(--color-primary-container)] font-mono font-bold">{{ log.port || log.dst_port || '-' }}</span>
               </div>
               
+              <div class="flex justify-between p-3 border-b border-white/5 items-center">
+                <span class="text-stone-400">Protocol</span>
+                <span class="text-stone-200 font-mono text-xs">{{ log.protocol || '-' }}</span>
+              </div>
+
               <div class="flex justify-between p-3 items-center">
-                <span class="text-stone-400">Action</span>
+                <span class="text-stone-400">Attack Type</span>
                 <span 
                   class="px-2 py-1 rounded text-[10px] font-bold tracking-wider uppercase"
                   :class="{
-                    'bg-[var(--color-error)]/20 text-[var(--color-error)] border border-[var(--color-error)]/30': log.action === 'BLOCKED',
-                    'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30': log.action !== 'BLOCKED'
+                    'bg-[var(--color-error)]/20 text-[var(--color-error)] border border-[var(--color-error)]/30': log.attack_type === 'DDOS' || log.attack_type === 'BRUTE-FORCE',
+                    'bg-amber-500/20 text-amber-400 border border-amber-500/30': log.attack_type === 'PORT-SCAN'
                   }"
                 >
-                  {{ log.action || 'UNKNOWN' }}
+                  {{ log.attack_type || 'UNKNOWN' }}
                 </span>
               </div>
 
+            </div>
+
+            <!-- Insight Box -->
+            <div v-if="log.insight" class="bg-[var(--color-primary-container)]/10 border border-[var(--color-primary-container)]/30 rounded-lg p-4 mt-2">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="material-symbols-outlined text-[16px] text-[var(--color-primary-container)]">lightbulb</span>
+                <span class="text-sm font-semibold text-[var(--color-primary-container)]">Threat Insight</span>
+              </div>
+              <p class="text-stone-300 text-xs leading-relaxed whitespace-pre-wrap">{{ log.insight }}</p>
             </div>
           </div>
           
