@@ -1,5 +1,5 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
-const WS_BASE = import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8000';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api';
+const WS_BASE = import.meta.env.VITE_WS_BASE_URL || `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/api`;
 
 const getHeaders = () => {
   const token = localStorage.getItem('access_token');
