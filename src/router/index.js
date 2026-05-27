@@ -4,12 +4,24 @@ import DashboardLayout from '../layouts/DashboardLayout.vue';
 import Login from '../pages/Login.vue';
 import Setup from '../pages/Setup.vue';
 import Dashboard from '../pages/Dashboard.vue';
+import NetworkError from '../pages/NetworkError.vue';
 import { checkSetup } from '../api/gateway';
 
 const routes = [
   {
     path: '/',
     redirect: '/login'
+  },
+  {
+    path: '/network-error',
+    component: AuthLayout,
+    children: [
+      {
+        path: '',
+        name: 'NetworkError',
+        component: NetworkError
+      }
+    ]
   },
   {
     path: '/login',
