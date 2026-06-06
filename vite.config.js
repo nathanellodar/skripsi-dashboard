@@ -12,9 +12,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icons.svg'],
       manifest: {
-        name: 'Gateway Security Monitoring Dashboard',
-        short_name: 'GW Monitor',
-        description: 'Real-time security monitoring dashboard for gateway',
+        name: 'Dashboard Skripsi Thanel',
+        short_name: 'Dashboard Skripsi',
+        description: 'Dashborad untuk monitoring gateway skripsi thanel',
         theme_color: '#0f172a',
         background_color: '#0f172a',
         display: 'standalone',
@@ -22,12 +22,12 @@ export default defineConfig({
         start_url: '/',
         icons: [
           {
-            src: '/icons/pwa-192x192.png',
+            src: '/icons/logo-infor.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: '/icons/pwa-512x512.png',
+            src: '/icons/logo-infor.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'
