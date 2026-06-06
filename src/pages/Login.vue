@@ -9,7 +9,8 @@
       <!-- Header / Branding -->
       <div class="flex flex-col items-center gap-3 w-full text-center">
         <div class="w-16 h-16 rounded-xl bg-surface-container-high border border-outline-variant flex items-center justify-center shadow-lg shadow-black/30 mb-2">
-          <span class="material-symbols-outlined text-4xl text-[var(--color-primary)]" style="font-variation-settings: 'FILL' 1;">shield_lock</span>
+          <!-- <span class="material-symbols-outlined text-4xl text-[var(--color-primary)]" style="font-variation-settings: 'FILL' 1;">shield_lock</span> -->
+          <img src="/icons/logo-infor.png" alt="Monitoring Gateway" class="w-12 h-12">
         </div>
         <h1 class="font-headline-xl text-[40px] leading-tight font-bold text-on-surface tracking-tight">Monitoring Gateway</h1>
         <p class="font-body-sm text-sm text-on-surface-variant">Secure Authentication Portal</p>
